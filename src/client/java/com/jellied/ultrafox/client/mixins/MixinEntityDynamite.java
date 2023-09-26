@@ -131,15 +131,20 @@ public class MixinEntityDynamite implements DynamiteAccessor {
             hasExploded = true;
             tnt.setPositionAndRotation(anticipatedPosition.xCoord, anticipatedPosition.yCoord, anticipatedPosition.zCoord, tnt.rotationYaw, tnt.rotationPitch);
 
+            if (tnt.fire > 0) {
+                target.fire = 300;
+            }
+
             if (!isBoosted) {
                 for (int i = 0; i < 8; i++) {
                     tnt.worldObj.spawnParticle("lava", tnt.posX, tnt.posY, tnt.posZ, 0, 0, 0);
                     tnt.worldObj.createSmallExplosion(null, tnt.posX, tnt.posY, tnt.posZ, 1);
+                    (new WorldGenFireMolotov()).generate(tnt.worldObj, tnt.worldObj.rand, (int) tnt.posX, (int) tnt.posY, (int) tnt.posZ);
                 }
             }
             else {
                 tnt.worldObj.newExplosion(null, tnt.posX, tnt.posY, tnt.posZ, 2F, false);
-                for (int i = 0; i < 2 && tnt.fire > 0; i++) {
+                for (int i = 0; i < 3 && tnt.fire > 0; i++) {
                     (new WorldGenFireMolotov()).generate(tnt.worldObj, tnt.worldObj.rand, (int) tnt.posX, (int) tnt.posY, (int) tnt.posZ);
                 }
 
@@ -167,6 +172,7 @@ public class MixinEntityDynamite implements DynamiteAccessor {
         }
 
         if (!isBoosted) {
+            (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
             return world.createSmallExplosion(entity, x, y, z, magnitude);
         }
 
@@ -177,7 +183,7 @@ public class MixinEntityDynamite implements DynamiteAccessor {
             world.spawnParticle("lava", (int) x, (int) y, (int) z, 0, 0, 0);
         }
 
-        for (int i = 0; i < 2 && tnt.fire > 0; i++) {
+        for (int i = 0; i < 3 && tnt.fire > 0; i++) {
             (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
         }
 
