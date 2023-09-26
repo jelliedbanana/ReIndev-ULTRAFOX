@@ -5,9 +5,15 @@ import net.minecraft.src.client.gui.GuiScreen;
 import net.minecraft.src.client.gui.ScaledResolution;
 
 public class GuiFreezeFrame extends GuiScreen {
-    public GuiFreezeFrame() {
-        this.allowUserInput = true;
-    }
+    public boolean allowUserInput = true;
+    final int WHITE = (255/4) << 24 | 255 << 16 | 255 << 8 | 255;
+    // I have no fucking clue what bit shifting is or how it works
+    // But from reading the source code I found that with the above algorithm,
+    // you can plug in an alpha, red, green, and blue value and get some random number
+    // which can then be bit shifted back into the original rgba values
+    // again, no idea how, but it works
+
+    public GuiFreezeFrame() {}
 
     public void setDimensions(Minecraft minecraft) {
         ScaledResolution scaledDisplay = ScaledResolution.instance;
@@ -16,22 +22,15 @@ public class GuiFreezeFrame extends GuiScreen {
     }
 
     public void drawScreen(int var1, int var2, float dt) {
-        drawGradientRect(0, 0, this.width, this.height, 1073741823, 1073741823);
+        drawGradientRect(0, 0, this.width, this.height, WHITE, WHITE);
     }
 
-    public void updateScreen() {
-        return;
-    }
+    // A bunch of empty methods because otherwise an exception is thrown.
+    public void updateScreen() {}
 
-    public void handleMouseInput() {
-        return;
-    }
+    public void handleMouseInput() {}
 
-    public void handleKeyboardInput() {
-        return;
-    }
+    public void handleKeyboardInput() {}
 
-    protected void keyTyped(char eventChar, int eventKey) {
-        return;
-    }
+    protected void keyTyped(char eventChar, int eventKey) {}
 }

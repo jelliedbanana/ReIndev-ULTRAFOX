@@ -14,6 +14,7 @@ import net.minecraft.src.game.entity.player.EntityPlayer;
 import net.minecraft.src.game.level.Explosion;
 import net.minecraft.src.game.level.World;
 import net.minecraft.src.game.level.features.WorldGenFireMolotov;
+import net.minecraft.src.game.nbt.NBTTagCompound;
 import org.lwjgl.Sys;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -33,6 +34,10 @@ public class MixinEntityDynamite implements DynamiteAccessor {
     @Inject(method = "<init>(Lnet/minecraft/src/game/level/World;Lnet/minecraft/src/game/entity/EntityLiving;)V", at = @At("TAIL"))
     public void onInit(World world, EntityLiving owner, CallbackInfo ci) {
         thrower = owner;
+        if (owner.fire > 0) {
+            // DESTRUCTIVE
+            ((EntityDynamite) (Object) this).fire = 300;
+        }
     }
 
     @Redirect(method = "<init>(Lnet/minecraft/src/game/level/World;Lnet/minecraft/src/game/entity/EntityLiving;)V", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/game/entity/other/EntityDynamite;setSize(FF)V"))
@@ -82,6 +87,8 @@ public class MixinEntityDynamite implements DynamiteAccessor {
 
     @Inject(method = "onEntityUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/game/level/World;rayTraceBlocks(Lnet/minecraft/src/client/renderer/Vec3D;Lnet/minecraft/src/client/renderer/Vec3D;)Lnet/minecraft/src/client/physics/MovingObjectPosition;"), cancellable = true)
     public void onRaytrace(CallbackInfo ci) {
+        // This inject allows dynamite to explode on contact with an entity
+
         EntityDynamite tnt = (EntityDynamite) (Object) this;
         Vec3D position = Vec3D.createVector(tnt.posX, tnt.posY, tnt.posZ);
         Vec3D anticipatedPosition = Vec3D.createVector(tnt.posX + tnt.motionX, tnt.posY + tnt.motionY, tnt.posZ + tnt.motionZ);
@@ -106,8 +113,6 @@ public class MixinEntityDynamite implements DynamiteAccessor {
             if (entity.canBeCollidedWith() && (entity != thrower || ticksInAirFirework >= 5)) {
                 AxisAlignedBB targetBB = entity.boundingBox.expand(0.3F, 0.3F, 0.3F);
                 MovingObjectPosition targetPos = targetBB.func_1169_a(position, anticipatedPosition);
-
-                System.out.println(entity + " " + targetPos);
 
                 if (targetPos == null) {
                     continue;
@@ -134,8 +139,8 @@ public class MixinEntityDynamite implements DynamiteAccessor {
             }
             else {
                 tnt.worldObj.newExplosion(null, tnt.posX, tnt.posY, tnt.posZ, 2F, false);
-                for (int i = 0; i < 2; i++) {
-                    // (new WorldGenFireMolotov()).generate(tnt.worldObj, tnt.worldObj.rand, (int) tnt.posX, (int) tnt.posY, (int) tnt.posZ);
+                for (int i = 0; i < 2 && tnt.fire > 0; i++) {
+                    (new WorldGenFireMolotov()).generate(tnt.worldObj, tnt.worldObj.rand, (int) tnt.posX, (int) tnt.posY, (int) tnt.posZ);
                 }
 
                 for (int i = 0; i < 16; i++) {
@@ -148,8 +153,6 @@ public class MixinEntityDynamite implements DynamiteAccessor {
                 }
             }
 
-
-
             tnt.setEntityDead();
             ci.cancel();
         }
@@ -157,6 +160,8 @@ public class MixinEntityDynamite implements DynamiteAccessor {
 
     @Redirect(method = "onEntityUpdate", at = @At(value = "INVOKE", target = "Lnet/minecraft/src/game/level/World;createSmallExplosion(Lnet/minecraft/src/game/entity/Entity;DDDF)Lnet/minecraft/src/game/level/Explosion;"))
     public Explosion onDetonate(World world, Entity entity, double x, double y, double z, float magnitude) {
+        EntityDynamite tnt = (EntityDynamite) (Object) this;
+
         if (hasExploded) {
             return null;
         }
@@ -172,8 +177,8 @@ public class MixinEntityDynamite implements DynamiteAccessor {
             world.spawnParticle("lava", (int) x, (int) y, (int) z, 0, 0, 0);
         }
 
-        for (int i = 0; i < 2; i++) {
-            // (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
+        for (int i = 0; i < 2 && tnt.fire > 0; i++) {
+            (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
         }
 
         return explosion;

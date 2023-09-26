@@ -8,8 +8,9 @@
     "MixinEntityRenderer",
     "MixinEntityDynamite",
     "MixinMinecraft",
-    "MixinWorld",
     "MixinBiomeGenBase",
-    "MixinRenderManager"
+    "MixinRenderManager",
+    "MixinEntityList",
+    "MixinGuiIngame"
   ]
 }

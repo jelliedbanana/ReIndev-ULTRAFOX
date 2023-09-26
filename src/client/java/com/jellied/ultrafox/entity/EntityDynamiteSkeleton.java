@@ -7,6 +7,7 @@ import net.minecraft.src.game.entity.other.EntityDynamite;
 import net.minecraft.src.game.item.Item;
 import net.minecraft.src.game.item.ItemStack;
 import net.minecraft.src.game.level.World;
+import net.minecraft.src.game.nbt.NBTTagCompound;
 
 public class EntityDynamiteSkeleton extends EntityMob {
     private static final ItemStack defaultHeldItem = new ItemStack(Item.dynamite, 1);
@@ -61,6 +62,7 @@ public class EntityDynamiteSkeleton extends EntityMob {
                 worldObj.playSoundAtEntity((Entity) this, "random.bow", 1.0F, 1.0F / (worldObj.rand.nextFloat() * 0.4F + 0.8F));
                 worldObj.playAuxSFX(998, this.posX, this.posY, this.posZ, 0);
                 worldObj.entityJoinedWorld(tnt);
+
                 tnt.setFireworkHeading(targetXDirection, targetYDirection + targetYDirection2, targetZDirection, 0.6F, 12F);
             }
 
@@ -71,6 +73,16 @@ public class EntityDynamiteSkeleton extends EntityMob {
 
     protected int getDropItemId() {
         return Item.dynamite.itemID;
+    }
+
+    protected String getEntityString() {
+        // The superclass's method being overridden here would normally
+        // check for an entry in the EntityList map using the EntityDynamiteSkeleton class
+        // since EntityDynamiteSkeleton is not an entry in the map, it would return null
+        // this is only important so that dynamite skeleton entities are saved
+        // without an 'id' tag in the nbt, it can't be saved
+
+        return "DynamiteSkeleton";
     }
 
     protected void dropFewItems() {

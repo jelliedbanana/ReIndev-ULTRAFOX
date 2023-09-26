@@ -6,6 +6,7 @@ import net.minecraft.src.client.model.ModelSkeleton;
 import net.minecraft.src.client.renderer.entity.RenderBiped;
 import net.minecraft.src.game.entity.EntityLiving;
 
+// Mostly copied from the RenderSkeleton class
 public class RenderDynamiteSkeleton extends RenderBiped {
     private ModelSkeleton modelArmor;
 
