@@ -4,11 +4,12 @@
   "package": "com.jellied.ultrafox.client.mixins",
   "compatibilityLevel": "JAVA_8",
   "mixins": [
-    "MixinSkeleton",
     "MixinEntity",
     "MixinEntityRenderer",
     "MixinEntityDynamite",
     "MixinMinecraft",
-    "MixinWorld"
+    "MixinWorld",
+    "MixinBiomeGenBase",
+    "MixinRenderManager"
   ]
 }
