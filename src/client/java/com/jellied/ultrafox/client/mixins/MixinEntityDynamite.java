@@ -172,8 +172,12 @@ public class MixinEntityDynamite implements DynamiteAccessor {
         }
 
         if (!isBoosted) {
-            (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
-            return world.createSmallExplosion(entity, x, y, z, magnitude);
+            Explosion explosion = world.createSmallExplosion(entity, x, y, z, magnitude);
+            if (tnt.fire > 0) {
+                (new WorldGenFireMolotov()).generate(world, world.rand, (int) x, (int) y, (int) z);
+            }
+
+            return explosion;
         }
 
         hasExploded = true;
