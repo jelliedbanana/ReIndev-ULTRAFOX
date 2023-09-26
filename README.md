@@ -3,6 +3,8 @@
 MANKIND IS FOX. FOX IS FUEL. HELL IS FOX.
 
 # What does this mod add?
+*This mod is currently singleplayer only.*
+
 Right now this mod adds skeletons that throw dynamite at you.
 You can parry dynamite by punching it. Parried dynamite has a larger explosion.
 
