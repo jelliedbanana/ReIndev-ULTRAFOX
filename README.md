@@ -1,5 +1,9 @@
 # ULTRAFOX
 
+Requires FoxLoader
+
+Compatible with ReIndev v2.8.1
+
 MANKIND IS FOX. FOX IS FUEL. HELL IS FOX.
 
 # What does this mod add?
